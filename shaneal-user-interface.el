@@ -1,5 +1,4 @@
 (provide 'shaneal-user-interface)
-
 ;;general stuff
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
@@ -14,6 +13,7 @@
 (scroll-bar-mode t)
 (tool-bar-mode nil)
 (transient-mark-mode t)
+(global-font-lock-mode 1)
 
 ;;color-theme
 (add-to-list 'load-path (concat *emacs-lib-base* "color-theme/"))

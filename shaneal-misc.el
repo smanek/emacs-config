@@ -3,6 +3,9 @@
 ;;ido mode
 (require 'ido)
 (ido-mode t)
+(setq confirm-nonexistent-file-or-buffer nil)
+
+(icomplete-mode 99)
 
 ;;utf8
 (prefer-coding-system       'utf-8)
@@ -34,5 +37,12 @@
 		log-edit-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))
 
+;;windmove
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
+
 ;;custom keys
 (global-set-key "\M-g" 'goto-line)
+
+;;indentation
+(setq-default indent-tabs-mode nil)
