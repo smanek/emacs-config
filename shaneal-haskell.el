@@ -2,7 +2,7 @@
 
 ;;Haskell
 (load (concat *emacs-lib-base* "haskell-mode/haskell-site-file"))
-(load "~/elisp/hs-lint.el")
+(load (concat *emacs-lib-base* "hs-lint.el"))
 (defun my-haskell-mode-hook ()
   (turn-on-haskell-indentation)
   (turn-on-haskell-doc-mode)
