@@ -14,9 +14,10 @@
 			      "/usr/local/bin/sbcl"
 			      (shell-command-to-string  "which sbcl")
 			      (shell-command-to-string "which clisp"))))
-    (dolist (bin ordered-preference)
-      (when (file-executable-p bin)
-	(return bin)))))
+    (catch 'return
+      (dolist (bin ordered-preference)
+        (when (file-executable-p bin)
+          (throw 'return bin))))))
 
 ;;SLIME
 (add-to-list 'load-path (concat *emacs-lib-base* "slime/"))

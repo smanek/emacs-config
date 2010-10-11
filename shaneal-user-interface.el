@@ -7,11 +7,14 @@
 (mouse-avoidance-mode 'cat-and-mouse)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(mouse-wheel-mode t)
+(when (fboundp 'mouse-wheel-mode)
+  (mouse-wheel-mode t))
 (line-number-mode t)
 (column-number-mode t)
-(scroll-bar-mode t)
-(tool-bar-mode nil)
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode t))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode nil))
 (transient-mark-mode t)
 (global-font-lock-mode 1)
 
