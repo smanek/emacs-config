@@ -3,13 +3,16 @@
 (add-to-list 'load-path *emacs-base*)
 (add-to-list 'load-path *emacs-lib-base*)
 
+(require 'shaneal-package-manager) ;;package.el (elpa)
 (require 'shaneal-user-interface) ;;color-theme, etc
 (require 'shaneal-misc) ;;ido, encoding, backup files, et
 (require 'shaneal-lisp) ;;paredit, slime, etc
+(require 'shaneal-clojure)
 (require 'shaneal-haskell) ;;haskell-mode
 (require 'shaneal-web) ;;js2 and nxml
 (require 'shaneal-latex)
 (require 'shaneal-perl)
+(require 'shaneal-ruby)
 
 ;; ;;os specific code
 ;; ;;c++

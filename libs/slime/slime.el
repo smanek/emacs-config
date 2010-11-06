@@ -198,6 +198,9 @@ The default is nil, as this feature can be a security risk."
   :type 'integer
   :group 'slime-lisp)
 
+(defvar slime-connect-host-history (list slime-lisp-host))
+(defvar slime-connect-port-history (list (prin1-to-string slime-port)))
+
 (defvar slime-net-valid-coding-systems
   '((iso-latin-1-unix nil "iso-latin-1-unix")
     (iso-8859-1-unix  nil "iso-latin-1-unix")
@@ -1126,8 +1129,14 @@ The rules for selecting the arguments are rather complicated:
                (list :program program :program-args args))))))
 
 (defun slime-lookup-lisp-implementation (table name)
-  (destructuring-bind (name (prog &rest args) &rest keys) (assoc name table)
-    (list* :name name :program prog :program-args args keys)))
+  (let ((arguments (rest (assoc name table))))
+    (unless arguments
+      (error "Could not find lisp implementation with the name '%S'" name))
+    (when (and (= (length arguments) 1)
+               (functionp (first arguments)))
+      (setf arguments (funcall (first arguments))))
+    (destructuring-bind ((prog &rest args) &rest keys) arguments
+      (list* :name name :program prog :program-args args keys))))
 
 (defun* slime-start (&key (program inferior-lisp-program) program-args 
                           directory
@@ -1170,9 +1179,12 @@ DIRECTORY change to this directory before starting the process.
 
 (defun slime-connect (host port &optional coding-system)
   "Connect to a running Swank server. Return the connection."
-  (interactive (list (read-from-minibuffer "Host: " slime-lisp-host)
-                     (read-from-minibuffer "Port: " (format "%d" slime-port)
-                                           nil t)))
+  (interactive (list (read-from-minibuffer
+                      "Host: " (first slime-connect-host-history)
+                      nil nil '(slime-connect-host-history . 1))
+                     (string-to-int (read-from-minibuffer
+                      "Port: " (first slime-connect-port-history)
+                      nil nil '(slime-connect-port-history . 1)))))
   (when (and (interactive-p) slime-net-processes
              (y-or-n-p "Close old connections first? "))
     (slime-disconnect-all))
@@ -3263,12 +3275,12 @@ you should check twice before modifying.")
     ((:function-name name)
      (let ((case-fold-search t)
            (name (regexp-quote name)))
-       (when (or 
-              (re-search-forward 
-               (format "\\s *(def\\(\\s_\\|\\sw\\)*\\s +%s\\S_" name) nil t)
-              (re-search-forward 
-               (format "\\s *(def\\(\\s_\\|\\sw\\)*\\s +(*%s\\S_" name) nil t)
-              (re-search-forward 
+       (goto-char (point-min))
+       (when (or
+              (re-search-forward
+               (format "\\s *(def\\(\\s_\\|\\sw\\)*\\s +(*%s\\S_"
+                       (regexp-quote name)) nil t)
+              (re-search-forward
                (format "[( \t]%s\\>\\(\\s \\|$\\)" name) nil t))
          (goto-char (match-beginning 0)))))
     ((:method name specializers &rest qualifiers)
@@ -6451,6 +6463,8 @@ If PREV resp. NEXT are true insert more-buttons as needed."
                  'mouse-face 'highlight
                  'face 'slime-inspector-value-face)
          (insert string)))
+      ((:label string)
+       (insert (slime-inspector-fontify label string)))
       ((:action string id)
        (slime-insert-propertized (list 'slime-action-number id
                                        'mouse-face 'highlight

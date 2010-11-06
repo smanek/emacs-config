@@ -2668,7 +2668,9 @@ Operation was KERNEL::DIVISION, operands (1 0).\"
   (nth index *sldb-restarts*))
 
 (defslimefun invoke-nth-restart (index)
-  (invoke-restart-interactively (nth-restart index)))
+  (let ((restart (nth-restart index)))
+    (when restart
+      (invoke-restart-interactively restart))))
 
 (defslimefun sldb-abort ()
   (invoke-restart (find 'abort *sldb-restarts* :key #'restart-name)))
@@ -3479,6 +3481,8 @@ DSPEC is a string and LOCATION a source location. NAME is a string."
               ((:newline) (list newline))
               ((:value obj &optional str) 
                (list (value-part obj str (istate.parts istate))))
+              ((:label &rest strs)
+               (list (list :label (apply #'concatenate 'string (mapcar #'string strs)))))
               ((:action label lambda &key (refreshp t)) 
                (list (action-part label lambda refreshp
                                   (istate.actions istate))))
