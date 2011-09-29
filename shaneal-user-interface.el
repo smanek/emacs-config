@@ -2,6 +2,7 @@
 ;;general stuff
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
+(setq visible-bell t)
 
 (show-paren-mode t)
 (mouse-avoidance-mode 'cat-and-mouse)
@@ -25,3 +26,10 @@
       (require 'color-theme)
       (color-theme-initialize)
       (color-theme-charcoal-black)))
+
+
+;; kill all open buffers on M-x close-all-buffers
+(defun close-all-buffers ()
+  (interactive)
+  (save-some-buffers)
+  (mapc 'kill-buffer (buffer-list)))

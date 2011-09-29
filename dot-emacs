@@ -6,6 +6,7 @@
 ;(require 'shaneal-package-manager) ;;package.el (elpa)
 (require 'shaneal-user-interface) ;;color-theme, etc
 (require 'shaneal-misc) ;;ido, encoding, backup files, et
+(require 'shaneal-protobuf) ;; google protocol buffers
 (require 'shaneal-lisp) ;;paredit, slime, etc
 ;(require 'shaneal-clojure)
 (require 'shaneal-haskell) ;;haskell-mode
